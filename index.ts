@@ -320,7 +320,7 @@ export class ActionPanel extends HTMLElement {
     this.#dialog.removeEventListener("pointermove", this.#onPointerMove);
     this.#dialog.removeEventListener("pointerup", this.#onPointerUp);
     this.#dialog.removeEventListener("pointercancel", this.#onPointerUp);
-    this.#dialog.classList.remove("dragging"); // re-enable the spring transition
+    this.#dialog.classList.remove("dragging");
 
     const dy = e.clientY - this.#startY;
     const height = this.#dialog.getBoundingClientRect().height;

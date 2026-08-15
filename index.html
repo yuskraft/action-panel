@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>action-panel</title>
+    <script defer src="./index.js"></script>
+  </head>
+  <body>
+      <button class="trigger" id="open">Open Panel</button>
+      <p class="hint">
+        Opens as a right-side panel. <strong>Narrow the window under 768px</strong>
+        (or use devtools device mode) and it becomes a bottom drawer — drag the
+        handle down to dismiss.
+      </p>
+      <a class="back" href="/">&larr; back to gallery</a>
+
+      <action-panel id="panel">
+        <h2 slot="title">Action Panel</h2>
+
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input id="email" type="email" placeholder="john@cryomail.com" />
+        </div>
+        <div class="field">
+          <label for="name">Contact Name</label>
+          <input id="name" type="text" placeholder="John David Rumero" />
+        </div>
+        <div class="field">
+          <label for="phone">Contact Phone Number</label>
+          <input id="phone" type="tel" placeholder="Enter phone number" />
+        </div>
+        <div class="field">
+          <label for="owner">Contact Owner</label>
+          <select id="owner">
+            <option>Select owner of this contact</option>
+            <option>Me</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="company">Company</label>
+          <select id="company">
+            <option>Select company</option>
+            <option>My Company</option>
+          </select>
+        </div>
+
+        <div slot="footer" style="display: flex; gap: 0.75rem">
+          <button class="btn" id="cancel">Cancel</button>
+          <button class="btn primary" id="confirm">Confirm</button>
+        </div>
+      </action-panel>
+      <script>
+        const panel = document.getElementById("panel");
+        document.getElementById("open").addEventListener("click", () => panel.show());
+        document.getElementById("cancel").addEventListener("click", () => panel.hide());
+        document.getElementById("confirm").addEventListener("click", () => panel.hide());
+      </script>
+  </body>
+</html>

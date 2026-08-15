@@ -1,2 +1,2 @@
 # action-panel
-Reusable, nondependence action panel component (native web component).
+Reusable, nondependent action panel component (native web component).
