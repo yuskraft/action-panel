@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["index.ts", "vite.config.ts"]
+  "include": ["index.ts", "define.ts"]
 }

@@ -182,8 +182,14 @@ footer[hidden] {
 }
 `;
 
-const sheet = new CSSStyleSheet();
-sheet.replaceSync(styles);
+let sheet: CSSStyleSheet | undefined;
+const styleSheet = () => {
+  if (!sheet) {
+    sheet = new CSSStyleSheet();
+    sheet.replaceSync(styles);
+  }
+  return sheet;
+};
 
 const TEMPLATE = `
   <dialog part="dialog">
@@ -219,7 +225,12 @@ const rubberband = (overshoot: number, dimension: number) =>
   (overshoot * dimension * RUBBERBAND) /
   (dimension + RUBBERBAND * Math.abs(overshoot));
 
-export class ActionPanel extends HTMLElement {
+const Base: typeof HTMLElement =
+  typeof HTMLElement === "undefined"
+    ? (class {} as unknown as typeof HTMLElement)
+    : HTMLElement;
+
+export class ActionPanel extends Base {
   #dialog!: HTMLDialogElement;
   #drawer = window.matchMedia(DRAWER);
   #reduced = window.matchMedia(REDUCED);
@@ -278,7 +289,7 @@ export class ActionPanel extends HTMLElement {
 
   #render() {
     const root = this.attachShadow({ mode: "open" });
-    root.adoptedStyleSheets = [sheet];
+    root.adoptedStyleSheets = [styleSheet()];
     root.innerHTML = TEMPLATE;
     this.#dialog = root.querySelector("dialog")!;
 
@@ -458,13 +469,5 @@ export class ActionPanel extends HTMLElement {
     };
 
     this.#raf = requestAnimationFrame(step);
-  }
-}
-
-customElements.define("action-panel", ActionPanel);
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "action-panel": ActionPanel;
   }
 }

@@ -1,12 +1,51 @@
 {
-  "name": "action-panel",
+  "name": "actionpanel",
   "version": "0.1.0",
+  "description": "A zero-dependency action panel web component: side panel on desktop, drag-to-dismiss bottom sheet on mobile, with interruptible spring physics.",
   "type": "module",
+  "license": "MIT",
+  "author": "Nurlan Yusifli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuskraft/action-panel.git"
+  },
+  "homepage": "https://github.com/yuskraft/action-panel#readme",
+  "bugs": "https://github.com/yuskraft/action-panel/issues",
+  "keywords": [
+    "web-component",
+    "custom-element",
+    "bottom-sheet",
+    "drawer",
+    "action-panel",
+    "dialog",
+    "drag-to-dismiss",
+    "spring",
+    "zero-dependency"
+  ],
+  "sideEffects": [
+    "./dist/define.js"
+  ],
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./define": {
+      "types": "./dist/define.d.ts",
+      "default": "./dist/define.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run build"
   },
   "devDependencies": {
     "typescript": "^5.9.0",
