@@ -1,10 +1,6 @@
-# actionpanel
+# <action-panel>
 
-A side panel that becomes a drag-to-dismiss bottom sheet on narrow screens. Native web component, **zero dependencies**, ~3 kB gzipped.
-
-The drag is the point. Grab the sheet mid-flight and it takes over from where it is, carrying its velocity — no jump, no restart. Release is a critically damped spring, not a fixed duration, and the dismiss decision uses momentum projection, so a short fast flick throws it away while the same distance dragged slowly springs back.
-
-Built on `<dialog showModal()>`, so focus trapping, the top layer, inert background, and <kbd>Esc</kbd> are the platform's, not reimplemented.
+A side panel that becomes a drag-to-dismiss drawer on narrow screens. Native web component, **zero dependencies**, ~3 kB gzipped.
 
 ## Install
 
