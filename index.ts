@@ -30,8 +30,9 @@ dialog {
 dialog:not([open]) {
   display: none;
 }
-dialog.dragging {
+dialog.gesture {
   transition: none;
+  will-change: translate;
 }
 dialog::backdrop {
   background: var(--ap-scrim);
@@ -155,9 +156,28 @@ footer[hidden] {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  dialog,
+  dialog {
+    opacity: 0;
+    translate: none;
+    transition:
+      opacity 0.2s ease,
+      overlay 0.2s ease allow-discrete,
+      display 0.2s ease allow-discrete;
+  }
+  dialog[open] {
+    opacity: 1;
+    translate: none;
+  }
   dialog::backdrop {
-    transition-duration: 0.01ms;
+    transition:
+      opacity 0.2s ease,
+      overlay 0.2s ease allow-discrete,
+      display 0.2s ease allow-discrete;
+  }
+  @starting-style {
+    dialog[open] {
+      opacity: 0;
+    }
   }
 }
 `;
@@ -178,19 +198,43 @@ const TEMPLATE = `
 `;
 
 const DRAWER = "(max-width: 767px)";
-const DISMISS_DISTANCE = 0.25;
-const DISMISS_VELOCITY = 0.5;
+const REDUCED = "(prefers-reduced-motion: reduce)";
+
+const SPRING_DAMPING = 1;
+const SPRING_RESPONSE = 0.3;
+const SPRING_EPSILON = 0.5;
+const SPRING_EPSILON_V = 5;
+
+const DISMISS_FRACTION = 0.5;
+const DECELERATION = 0.998;
+const STALE_VELOCITY_MS = 100;
+const RUBBERBAND = 0.55;
+
+const MAX_VELOCITY = 6000;
+
+const project = (velocity: number) =>
+  ((velocity / 1000) * DECELERATION) / (1 - DECELERATION);
+
+const rubberband = (overshoot: number, dimension: number) =>
+  (overshoot * dimension * RUBBERBAND) /
+  (dimension + RUBBERBAND * Math.abs(overshoot));
 
 export class ActionPanel extends HTMLElement {
   #dialog!: HTMLDialogElement;
   #drawer = window.matchMedia(DRAWER);
+  #reduced = window.matchMedia(REDUCED);
 
   #dragging = false;
   #pointerId: number | null = null;
-  #startY = 0;
+  #origin = 0;
+  #height = 0;
   #lastY = 0;
   #lastT = 0;
   #velocity = 0;
+
+  #offset = 0;
+  #springV = 0;
+  #raf = 0;
 
   connectedCallback() {
     if (!this.#dialog) this.#render();
@@ -208,10 +252,12 @@ export class ActionPanel extends HTMLElement {
   disconnectedCallback() {
     this.#drawer.removeEventListener("change", this.#syncGesture);
     this.#teardownGesture();
+    this.#settle();
   }
 
   show() {
     if (this.#dialog.open) return;
+    this.#settle();
     this.#dialog.showModal();
     this.setAttribute("open", "");
     this.dispatchEvent(new CustomEvent("open"));
@@ -246,9 +292,18 @@ export class ActionPanel extends HTMLElement {
 
   #onNativeClose = () => {
     this.removeAttribute("open");
+    this.#settle();
     this.#dialog.style.translate = "";
+    this.#dialog.classList.remove("gesture");
     this.dispatchEvent(new CustomEvent("close"));
   };
+
+  #settle() {
+    cancelAnimationFrame(this.#raf);
+    this.#raf = 0;
+    this.#offset = 0;
+    this.#springV = 0;
+  }
 
   #onLightDismiss = (e: MouseEvent) => {
     const r = this.#dialog.getBoundingClientRect();
@@ -275,15 +330,23 @@ export class ActionPanel extends HTMLElement {
 
   #onPointerDown = (e: PointerEvent) => {
     if (!this.#dialog.open) return;
+    if (!this.#drawer.matches) return;
+    if (this.#dragging) return;
     const fromGrip = (e.target as Element).closest(".handle, header");
     if (!fromGrip) return;
 
+    cancelAnimationFrame(this.#raf);
+    this.#raf = 0;
+    this.#springV = 0;
+
     this.#dragging = true;
     this.#pointerId = e.pointerId;
-    this.#startY = this.#lastY = e.clientY;
+    this.#origin = e.clientY - this.#offset;
+    this.#height = this.#dialog.getBoundingClientRect().height;
+    this.#lastY = e.clientY;
     this.#lastT = e.timeStamp;
     this.#velocity = 0;
-    this.#dialog.classList.add("dragging");
+    this.#dialog.classList.add("gesture");
     try {
       this.#dialog.setPointerCapture(e.pointerId);
     } catch {
@@ -295,49 +358,107 @@ export class ActionPanel extends HTMLElement {
   };
 
   #onPointerMove = (e: PointerEvent) => {
-    if (!this.#dragging) return;
-    let dy = e.clientY - this.#startY;
-    if (dy < 0) dy *= 0.4;
+    if (!this.#dragging || e.pointerId !== this.#pointerId) return;
+
+    const dy = e.clientY - this.#origin;
+    this.#offset = dy < 0 ? -rubberband(-dy, this.#height) : dy;
 
     const dt = e.timeStamp - this.#lastT;
     if (dt > 0) this.#velocity = (e.clientY - this.#lastY) / dt;
     this.#lastY = e.clientY;
     this.#lastT = e.timeStamp;
 
-    this.#dialog.style.translate = `0 ${dy}px`;
+    this.#draw();
   };
 
   #onPointerUp = (e: PointerEvent) => {
-    if (!this.#dragging) return;
+    if (!this.#dragging || e.pointerId !== this.#pointerId) return;
     this.#dragging = false;
-    if (this.#pointerId !== null) {
-      try {
-        this.#dialog.releasePointerCapture(this.#pointerId);
-      } catch {
-      }
-      this.#pointerId = null;
+    try {
+      this.#dialog.releasePointerCapture(this.#pointerId);
+    } catch {
     }
+    this.#pointerId = null;
     this.#dialog.removeEventListener("pointermove", this.#onPointerMove);
     this.#dialog.removeEventListener("pointerup", this.#onPointerUp);
     this.#dialog.removeEventListener("pointercancel", this.#onPointerUp);
-    this.#dialog.classList.remove("dragging");
 
-    const dy = e.clientY - this.#startY;
-    const height = this.#dialog.getBoundingClientRect().height;
+    const stale = e.timeStamp - this.#lastT > STALE_VELOCITY_MS;
+    const raw = stale ? 0 : this.#velocity * 1000; // px/s
+    const velocity = Math.max(-MAX_VELOCITY, Math.min(MAX_VELOCITY, raw));
     const dismiss =
-      dy > height * DISMISS_DISTANCE || this.#velocity > DISMISS_VELOCITY;
+      this.#offset + project(velocity) > this.#height * DISMISS_FRACTION;
+
+    if (this.#reduced.matches) {
+      if (dismiss) this.#dismiss();
+      else {
+        this.#settle();
+        this.#dialog.style.translate = "";
+        this.#dialog.classList.remove("gesture");
+      }
+      return;
+    }
 
     if (dismiss) {
-      this.#dialog.style.translate = "0 100%";
-      this.#dialog.addEventListener(
-        "transitionend",
-        () => this.hide(),
-        { once: true },
-      );
+      this.#spring(this.#height, velocity, () => this.#dismiss());
     } else {
-      this.#dialog.style.translate = "";
+      this.#spring(0, velocity, () => {
+        this.#dialog.style.translate = "";
+        this.#dialog.classList.remove("gesture");
+      });
     }
   };
+
+  #dismiss() {
+    this.#settle();
+    this.#dialog.style.translate = "";
+    this.#dialog.classList.remove("gesture");
+    this.hide();
+  }
+
+  #draw() {
+    this.#dialog.style.translate = `0 ${this.#offset}px`;
+  }
+
+  #spring(target: number, velocity: number, done: () => void) {
+    cancelAnimationFrame(this.#raf);
+    this.#springV = velocity;
+
+    const w = (2 * Math.PI) / SPRING_RESPONSE;
+    const descending = target < this.#offset;
+    let last = performance.now();
+
+    const step = (now: number) => {
+      const dt = Math.max(0, Math.min((now - last) / 1000, 1 / 30));
+      last = now;
+
+      const a =
+        -(w * w) * (this.#offset - target) - 2 * SPRING_DAMPING * w * this.#springV;
+      this.#springV += a * dt;
+      this.#offset += this.#springV * dt;
+
+      const reached = descending
+        ? this.#offset <= target
+        : this.#offset >= target;
+      const settled =
+        Math.abs(this.#offset - target) < SPRING_EPSILON &&
+        Math.abs(this.#springV) < SPRING_EPSILON_V;
+
+      if (reached || settled) {
+        this.#offset = target;
+        this.#springV = 0;
+        this.#raf = 0;
+        this.#draw();
+        done();
+        return;
+      }
+
+      this.#draw();
+      this.#raf = requestAnimationFrame(step);
+    };
+
+    this.#raf = requestAnimationFrame(step);
+  }
 }
 
 customElements.define("action-panel", ActionPanel);
