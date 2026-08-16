@@ -1,5 +1,5 @@
 {
-  "name": "actionpanel",
+  "name": "apan",
   "version": "0.1.0",
   "description": "A zero-dependency action panel web component: side panel on desktop, drag-to-dismiss bottom sheet on mobile, with interruptible spring physics.",
   "type": "module",
@@ -12,6 +12,7 @@
   "homepage": "https://github.com/yuskraft/action-panel#readme",
   "bugs": "https://github.com/yuskraft/action-panel/issues",
   "keywords": [
+    "apan",
     "web-component",
     "custom-element",
     "bottom-sheet",
