@@ -1,21 +1,21 @@
-# apan - `<action-panel>`
+# web-action-panel - `<action-panel>`
 
 A side panel that becomes a drag-to-dismiss drawer on narrow screens. Native web component, **zero dependencies**, ~3 kB gzipped.
 
 ## Install
 
 ```bash
-npm install apan
+npm install web-action-panel
 ```
 
 ```js
-import "apan/define";
+import "web-action-panel/define";
 ```
 
 Or straight from a CDN, no build step:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/apan/dist/define.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/web-action-panel/dist/define.js"></script>
 ```
 
 ## Usage
@@ -34,7 +34,7 @@ Or straight from a CDN, no build step:
 </action-panel>
 
 <script type="module">
-  import "apan/define";
+  import "web-action-panel/define";
 
   const panel = document.getElementById("panel");
   panel.show();
@@ -47,7 +47,7 @@ Or straight from a CDN, no build step:
 The default entry is side-effect free, so you can avoid a tag-name collision:
 
 ```js
-import { ActionPanel } from "apan";
+import { ActionPanel } from "web-action-panel";
 
 customElements.define("my-panel", ActionPanel);
 ```
