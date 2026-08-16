@@ -1,6 +1,6 @@
-# apan - <action-panel>
+# apan - `<action-panel>`
 
-`<action-panel>` — a side panel that becomes a drag-to-dismiss drawer on narrow screens. Native web component, **zero dependencies**, ~3 kB gzipped.
+A side panel that becomes a drag-to-dismiss drawer on narrow screens. Native web component, **zero dependencies**, ~3 kB gzipped.
 
 ## Install
 
