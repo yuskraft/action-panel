@@ -4,56 +4,390 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>action-panel</title>
+    <script>
+      if (new URLSearchParams(location.search).has("frame"))
+        document.documentElement.setAttribute("data-frame", "");
+    </script>
     <script type="module" src="/define.ts"></script>
+    <style>
+      /* artifact.css — AUTO-GENERATED from tokens/tokens.css + styles/base.css.
+         Do not edit by hand. Run: node scripts/build.mjs */
+      :root {
+        color-scheme: light;
+        --hue-accent: 129;
+        --hue-neutral: 98;
+        --bg:           oklch(0.965 0.008 var(--hue-neutral));
+        --surface:      oklch(0.99  0.015 var(--hue-neutral));
+        --surface-sunk: oklch(0.952 0.045 var(--hue-neutral));
+        --border:       oklch(0.90  0.040 var(--hue-neutral));
+        --border-strong:oklch(0.84  0.040 var(--hue-neutral));
+        --text:         oklch(0.264 0 var(--hue-neutral));
+        --text-2:       oklch(0.48 0.013 var(--hue-neutral));
+        --text-muted:   oklch(0.54 0.012 var(--hue-neutral));
+        --accent:       oklch(0.52 0.14 var(--hue-accent));
+        --accent-hover: oklch(0.47 0.15 var(--hue-accent));
+        --accent-quiet: oklch(0.93 0.05 var(--hue-accent));
+        --on-accent:    oklch(0.99 0.015 var(--hue-accent));
+        --danger:       oklch(0.53 0.17 25);
+        --ok:           oklch(0.50 0.085 191);
+        --tint-peach:    oklch(0.948 0.028 59);
+        --tint-rose:     oklch(0.93 0.05 25);
+        --tint-sage:     oklch(0.933 0.023 141);
+        --tint-lavender: oklch(0.931 0.027 318);
+        --tint-sky:      oklch(0.893 0.016 245);
+        --tint-butter:   oklch(0.915 0.090 95);
+        --tint-slate:    oklch(0.20 0.012 245);
+        --font-display: "Plus Jakarta Sans", ui-rounded, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+        --text-xs:  clamp(0.75rem,  0.72rem + 0.15vw, 0.8125rem);
+        --text-sm:  clamp(0.875rem, 0.85rem + 0.15vw, 0.9375rem);
+        --text-base:clamp(1rem,     0.96rem + 0.2vw,  1.0625rem);
+        --text-lg:  clamp(1.125rem, 1.06rem + 0.3vw,  1.25rem);
+        --text-xl:  clamp(1.375rem, 1.25rem + 0.6vw,  1.625rem);
+        --text-2xl: clamp(1.75rem,  1.5rem + 1.2vw,   2.25rem);
+        --text-3xl: clamp(2.25rem,  1.8rem + 2.2vw,   3.25rem);
+        --text-4xl: clamp(2.75rem,  2rem + 3.6vw,     4.5rem);
+        --leading-tight: 1.15;
+        --leading-snug:  1.35;
+        --leading-body:  1.65;
+        --tracking-tight: -0.02em;
+        --tracking-caps: 0.08em;
+        --measure: 68ch;
+        --space-1: 0.25rem;  --space-2: 0.5rem;   --space-3: 0.75rem;
+        --space-4: 1rem;     --space-5: 1.5rem;   --space-6: 2rem;
+        --space-7: 3rem;     --space-8: 4rem;     --space-9: 6rem;  --space-10: 8rem;
+        --radius-sm: 6px;    --radius-md: 10px;   --radius-lg: 16px;
+        --radius-xl: 24px;   --radius-full: 999px;
+        --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.04), 0 1px 1px oklch(0 0 0 / 0.03);
+        --shadow-md: 0 2px 4px oklch(0 0 0 / 0.04), 0 4px 12px oklch(0 0 0 / 0.06);
+        --shadow-lg: 0 4px 8px oklch(0 0 0 / 0.04), 0 16px 32px oklch(0 0 0 / 0.10);
+        --ease:       cubic-bezier(0.2, 0, 0, 1);
+        --ease-inout: cubic-bezier(0.77, 0, 0.175, 1);
+        --dur-fast: 120ms;
+        --dur:      180ms;
+        --dur-slow: 260ms;
+      }
+      :root[data-theme="dark"] {
+        color-scheme: dark;
+        --bg:            oklch(0.17  0.012 var(--hue-neutral));
+        --surface:       oklch(0.205 0.014 var(--hue-neutral));
+        --surface-sunk:  oklch(0.15  0.012 var(--hue-neutral));
+        --border:        oklch(0.27  0.014 var(--hue-neutral));
+        --border-strong: oklch(0.34  0.016 var(--hue-neutral));
+        --text:        oklch(0.93 0.008 var(--hue-neutral));
+        --text-2:      oklch(0.73 0.01  var(--hue-neutral));
+        --text-muted:  oklch(0.60 0.01  var(--hue-neutral));
+        --accent:       oklch(0.77 0.108 var(--hue-accent));
+        --accent-hover: oklch(0.82 0.11 var(--hue-accent));
+        --accent-quiet: oklch(0.28 0.06 var(--hue-accent));
+        --on-accent:    oklch(0.16 0.02 var(--hue-accent));
+        --danger:       oklch(0.72 0.15 25);
+        --ok:           oklch(0.70 0.054 191);
+        --tint-peach:    oklch(0.30 0.05 59);
+        --tint-rose:     oklch(0.30 0.05 25);
+        --tint-sage:     oklch(0.30 0.045 141);
+        --tint-lavender: oklch(0.30 0.05 318);
+        --tint-sky:      oklch(0.30 0.04 245);
+        --tint-butter:   oklch(0.30 0.055 95);
+        --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.3);
+        --shadow-md: 0 2px 8px oklch(0 0 0 / 0.35);
+        --shadow-lg: 0 8px 30px oklch(0 0 0 / 0.45);
+      }
+      * { box-sizing: border-box; }
+      @media (prefers-reduced-motion: reduce) {
+        * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--font-sans);
+        font-size: var(--text-base);
+        line-height: var(--leading-body);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        font-synthesis: none;
+        overflow-wrap: break-word;
+      }
+      h1, h2, h3 { font-family: var(--font-display); line-height: var(--leading-tight); font-weight: 650; margin: 0; text-wrap: balance; }
+      h1 { font-size: var(--text-3xl); letter-spacing: var(--tracking-tight); }
+      h2 { font-size: var(--text-xl); }
+      h3 { font-size: var(--text-lg); }
+      p { margin: 0; text-wrap: pretty; }
+      a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+      ::selection { background: var(--accent-quiet); }
+      :where(a, button, summary):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .container { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: var(--space-5); }
+      .prose { max-width: var(--measure); }
+      .prose > * + * { margin-block-start: var(--space-4); }
+      .stack   { display: flex; flex-direction: column; gap: var(--space-4); }
+      .cluster { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+      .list { display: flex; flex-direction: column; }
+      .list__row {
+        display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-5);
+        padding-block: var(--space-3);
+      }
+      .list__label { color: var(--text-2); }
+      .list__value { font-weight: 600; font-variant-numeric: tabular-nums; }
+      .btn {
+        font: inherit; font-weight: 550; cursor: pointer;
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-strong);
+        background: var(--surface); color: var(--text);
+        transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease),
+                    scale var(--dur-fast) var(--ease);
+      }
+      .btn:hover { background: var(--surface-sunk); }
+      .btn:active { scale: 0.97; }
+      .btn--accent { background: var(--accent); border-color: transparent; color: var(--on-accent); }
+      .btn--accent:hover { background: var(--accent-hover); }
+      .chip {
+        font-size: var(--text-sm); color: var(--text-2);
+        padding: var(--space-1) var(--space-3);
+        border: 1px solid var(--border); border-radius: var(--radius-full);
+      }
+      .muted { color: var(--text-muted); font-size: var(--text-sm); }
+      :where(input, textarea, select) {
+        font: inherit; color: var(--text);
+        background: var(--surface-sunk);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-2) var(--space-3);
+        caret-color: var(--accent);
+      }
+      ::placeholder { color: var(--text-muted); }
+      :where(input, textarea, select):focus-visible {
+        outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent;
+      }
+      .field { display: flex; flex-direction: column; gap: var(--space-1); }
+      .field__label { color: var(--text-2); font-size: var(--text-sm); font-weight: 500; }
+      .field__msg { color: var(--text-muted); font-size: var(--text-sm); }
+      .select { position: relative; display: inline-flex; }
+      .select select {
+        appearance: none;
+        width: 100%;
+        padding-inline-end: var(--space-6);
+        cursor: pointer;
+      }
+      .select::after {
+        content: "";
+        position: absolute;
+        inset-inline-end: var(--space-3);
+        inset-block-start: 50%;
+        width: 0.45em; height: 0.45em;
+        border-inline-end: 2px solid var(--text-2);
+        border-block-end: 2px solid var(--text-2);
+        transform: translateY(-70%) rotate(45deg);
+        pointer-events: none;
+      }
+      .reveal {
+        opacity: 1; translate: 0 0; filter: none;
+        transition: opacity var(--dur-slow) var(--ease),
+                    translate var(--dur-slow) var(--ease),
+                    filter var(--dur-slow) var(--ease);
+      }
+      @starting-style {
+        .reveal { opacity: 0; translate: 0 8px; filter: blur(4px); }
+      }
+      .stagger > .reveal:nth-child(2) { transition-delay: 60ms; }
+      .stagger > .reveal:nth-child(3) { transition-delay: 120ms; }
+      .stagger > .reveal:nth-child(4) { transition-delay: 180ms; }
+      .stagger > .reveal:nth-child(5) { transition-delay: 240ms; }
+
+      /* ── Demo page ───────────────────────────────────────────── */
+      .hero { text-align: center; padding-block: var(--space-9) var(--space-8); position: relative; overflow: clip; }
+      .hero::before {
+        content: ""; position: absolute; inset: 0; z-index: -1; opacity: 0.5;
+        background: radial-gradient(60% 60% at 50% 0%, var(--accent-quiet), transparent 70%);
+      }
+      .hero h1 { font-size: var(--text-4xl); max-width: 18ch; margin-inline: auto; }
+      .hero code { font-family: var(--font-mono); font-size: 0.85em; }
+      .hero > p { font-size: var(--text-lg); color: var(--text-2); max-width: 46ch; margin: var(--space-5) auto 0; }
+      .hero .cluster { justify-content: center; margin-block-start: var(--space-6); }
+      .hero .chips { justify-content: center; margin-block-start: var(--space-6); gap: var(--space-2); }
+
+      .behaviour { padding-block-end: var(--space-9); }
+      .behaviour .list { max-width: 40rem; }
+      .behaviour h2 { margin-block-end: var(--space-3); }
+      .status { margin-block-start: var(--space-6); font-variant-numeric: tabular-nums; }
+      .colophon { padding-block: var(--space-6) var(--space-7); }
+
+      /* Embedded 375px viewport — the component's own media query makes it a sheet */
+      .phone-section { padding-block-end: var(--space-9); }
+      .phone-section h2 { margin-block-end: var(--space-3); }
+      .phone-section > p { max-width: var(--measure); color: var(--text-2); }
+      .phone {
+        width: min(23.4375rem, 100%);
+        height: 42rem;
+        margin-block-start: var(--space-5);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-xl);
+        overflow: clip;
+        background: var(--surface);
+        box-shadow: var(--shadow-md);
+      }
+      .phone iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+      /* Frame mode: only the launcher renders inside the iframe */
+      .frame-launch {
+        display: none;
+        min-height: 100dvh;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-4);
+        text-align: center;
+        padding: var(--space-5);
+      }
+      .frame-launch p { max-width: 26ch; }
+      :root[data-frame] .frame-launch { display: flex; }
+      :root[data-frame] .hero,
+      :root[data-frame] .behaviour,
+      :root[data-frame] .phone-section,
+      :root[data-frame] .colophon { display: none; }
+      kbd {
+        font-family: var(--font-mono); font-size: var(--text-xs);
+        background: var(--surface-sunk); border: 1px solid var(--border);
+        border-radius: var(--radius-sm); padding: 0 var(--space-1);
+      }
+
+      /* Panel chrome themed from the same tokens */
+      action-panel {
+        --ap-bg: var(--surface);
+        --ap-fg: var(--text);
+        --ap-border: var(--border);
+        --ap-scrim: oklch(0.264 0 var(--hue-neutral) / 0.45);
+        --ap-radius: var(--radius-xl);
+      }
+      action-panel::part(dialog) { box-shadow: var(--shadow-lg); }
+      action-panel::part(close)  { border-radius: var(--radius-full); }
+      .panel-form { display: flex; flex-direction: column; gap: var(--space-4); }
+    </style>
   </head>
   <body>
-      <button class="trigger" id="open">Open Panel</button>
-      <p class="hint">
-        Opens as a right-side panel. <strong>Narrow the window under 768px</strong>
-        (or use devtools device mode) and it becomes a bottom drawer — drag the
-        handle down to dismiss.
-      </p>
+    <main>
+      <section class="container hero stagger">
+        <h1 class="reveal"><code>&lt;action-panel&gt;</code></h1>
+        <p class="reveal">
+          A side panel that becomes a drag-to-dismiss bottom sheet on narrow
+          screens. Native web component, zero dependencies, ~3&nbsp;kB gzipped.
+        </p>
+        <div class="cluster reveal">
+          <button class="btn btn--accent js-open" id="open">Open panel</button>
+          <a class="btn" href="https://github.com/yuskraft/action-panel">View on GitHub</a>
+        </div>
+        <div class="cluster chips reveal">
+          <span class="chip">Interruptible spring</span>
+          <span class="chip">Momentum dismiss</span>
+          <span class="chip">Rubber-banding</span>
+          <span class="chip">Reduced-motion aware</span>
+        </div>
+      </section>
 
-      <action-panel id="panel">
-        <h2 slot="title">Action Panel</h2>
+      <section class="container behaviour">
+        <h2>Try it</h2>
+        <div class="list">
+          <div class="list__row">
+            <span class="list__label">Wide viewport</span>
+            <span class="list__value">Slides in from the right</span>
+          </div>
+          <div class="list__row">
+            <span class="list__label">Under 768px</span>
+            <span class="list__value">Bottom sheet with a grab handle</span>
+          </div>
+          <div class="list__row">
+            <span class="list__label">Dismiss</span>
+            <span class="list__value"><kbd>Esc</kbd>, backdrop, or flick it down</span>
+          </div>
+        </div>
+        <p class="muted status">Last event: <span id="status">—</span></p>
+      </section>
 
-        <div class="field">
-          <label for="email">Email Address</label>
-          <input id="email" type="email" placeholder="john@cryomail.com" />
+      <section class="container phone-section">
+        <h2>Bottom sheet, no resizing needed</h2>
+        <p>
+          The same page inside a 375px viewport — the component's own media
+          query turns the panel into a drag-to-dismiss sheet. Open it and flick
+          it down by the handle.
+        </p>
+        <div class="phone">
+          <iframe src="/?frame" title="Mobile bottom-sheet preview"></iframe>
         </div>
-        <div class="field">
-          <label for="name">Contact Name</label>
-          <input id="name" type="text" placeholder="John David Rumero" />
-        </div>
-        <div class="field">
-          <label for="phone">Contact Phone Number</label>
-          <input id="phone" type="tel" placeholder="Enter phone number" />
-        </div>
-        <div class="field">
-          <label for="owner">Contact Owner</label>
-          <select id="owner">
-            <option>Select owner of this contact</option>
-            <option>Me</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="company">Company</label>
-          <select id="company">
-            <option>Select company</option>
-            <option>My Company</option>
-          </select>
-        </div>
+      </section>
 
-        <div slot="footer" style="display: flex; gap: 0.75rem">
-          <button class="btn" id="cancel">Cancel</button>
-          <button class="btn primary" id="confirm">Confirm</button>
+      <section class="frame-launch">
+        <p class="muted">
+          375px viewport — here the panel opens as a bottom sheet.
+        </p>
+        <button class="btn btn--accent js-open">Open sheet</button>
+      </section>
+
+      <footer class="container colophon">
+        <p class="muted">
+          Made with <a href="https://github.com/yuskraft/artifact-ui">artifact-ui</a>
+          — a design-token system for composed, self-contained pages.
+        </p>
+      </footer>
+    </main>
+
+    <action-panel id="panel">
+      <h2 slot="title">New contact</h2>
+
+      <div class="panel-form">
+        <div class="field">
+          <label class="field__label" for="name">Name</label>
+          <input id="name" type="text" placeholder="Amina Rustamova" />
         </div>
-      </action-panel>
-      <script>
-        const panel = document.getElementById("panel");
-        document.getElementById("open").addEventListener("click", () => panel.show());
-        document.getElementById("cancel").addEventListener("click", () => panel.hide());
-        document.getElementById("confirm").addEventListener("click", () => panel.hide());
-      </script>
+        <div class="field">
+          <label class="field__label" for="email">Email</label>
+          <input id="email" type="email" placeholder="amina@example.com" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="phone">Phone</label>
+          <input id="phone" type="tel" placeholder="+994 50 000 00 00" />
+          <p class="field__msg">Optional — used for reminders only.</p>
+        </div>
+        <div class="field">
+          <label class="field__label" for="owner">Owner</label>
+          <span class="select">
+            <select id="owner">
+              <option>Me</option>
+              <option>Unassigned</option>
+            </select>
+          </span>
+        </div>
+        <div class="field">
+          <label class="field__label" for="company">Company</label>
+          <span class="select">
+            <select id="company">
+              <option>Select a company</option>
+              <option>Cryomail</option>
+              <option>Yuskraft</option>
+            </select>
+          </span>
+        </div>
+      </div>
+
+      <div slot="footer" class="cluster">
+        <button class="btn" id="cancel">Cancel</button>
+        <button class="btn btn--accent" id="confirm">Save contact</button>
+      </div>
+    </action-panel>
+
+    <script type="module">
+      const panel = document.getElementById("panel");
+      const status = document.getElementById("status");
+
+      document.querySelectorAll(".js-open").forEach((btn) =>
+        btn.addEventListener("click", () => panel.show()));
+      document.getElementById("cancel").addEventListener("click", () => panel.hide());
+      document.getElementById("confirm").addEventListener("click", () => panel.hide());
+
+      panel.addEventListener("open", () => (status.textContent = "open"));
+      panel.addEventListener("close", () => (status.textContent = "close"));
+    </script>
   </body>
 </html>
